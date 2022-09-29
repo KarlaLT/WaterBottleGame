@@ -1,0 +1,9 @@
+﻿<Application x:Class="Unidad1JuegoBotellasAEstrella.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Unidad1JuegoBotellasAEstrella"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>
