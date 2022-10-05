@@ -13,7 +13,11 @@ namespace Unidad1JuegoBotellasAEstrella.Models
         public int H { get; set; }
         public int F => H + G;
 
-        public List<ColorBlock> ColorsBottle { get; set; } = new List<ColorBlock>();
+        public List<ColorBlock> ColorsBottle { get; set; }
+        public Bottle()
+        {
+            ColorsBottle = new List<ColorBlock>();
+        }
 
         public void CalculateH(List<Bottle> bottles)
         {

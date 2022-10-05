@@ -4,9 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unidad1JuegoBotellasAEstrella"
+        xmlns:mvvm="clr-namespace:Unidad1JuegoBotellasAEstrella.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <UniformGrid Columns="5">
+        <UniformGrid.DataContext>
+            <mvvm:GameOfBottleViewModel></mvvm:GameOfBottleViewModel>
+        </UniformGrid.DataContext>
+        <ListView ItemsSource="{Binding ListOfBottles}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ListView ItemsSource="{Binding ColorsBottle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Color}"></TextBlock>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </UniformGrid>
 </Window>
