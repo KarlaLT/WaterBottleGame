@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,82 +9,52 @@ using Unidad1JuegoBotellasAEstrella.Models;
 
 namespace Unidad1JuegoBotellasAEstrella.ViewModels
 {
-    public class GameOfBottleViewModel
+    public class GameOfBottleViewModel:INotifyPropertyChanged
     {
-        public List<Bottle> ListOfBottles { get; set; } = new List<Bottle>();
+        private Bottle bottle;
+        private List<Bottle> listOfBottles;
+        public List<Bottle> ListOfBottles
+        {
+            set { listOfBottles = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ListOfBottles")); }
+            get { return listOfBottles;}
+        }
         public int reds = 0;
         public int greens = 0;
         public int blues = 0;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public GameOfBottleViewModel()
         {
-            ListOfBottles.Add(
-            new Bottle
-            {
-             ColorsBottle = new List<ColorBlock>()
-            {
-                 new ColorBlock { Color = "Red" },
-                 new ColorBlock { Color = "Blue" },
-                 new ColorBlock { Color = "Green" },
-            }
-            });
-            ListOfBottles.Add(
-             new Bottle
-             {
-                 ColorsBottle = new List<ColorBlock>()
-             {
-                 new ColorBlock { Color = "Red" },
-                 new ColorBlock { Color = "Blue" },
-                 new ColorBlock { Color = "Green" },
-             }
-             });
-            ListOfBottles.Add(
-            new Bottle
-            {
-                ColorsBottle = new List<ColorBlock>()
-            {
-                 new ColorBlock { Color = "Red" },
-                 new ColorBlock { Color = "Blue" },
-                 new ColorBlock { Color = "Green" },
-            }
-            });
-            ListOfBottles.Add(
-            new Bottle
-            {
-                ColorsBottle = new List<ColorBlock>()
-            {
-                 new ColorBlock { Color = "" },
-                 new ColorBlock { Color = "" },
-                 new ColorBlock { Color = "" },
-            }
-            });
-            ListOfBottles.Add(
-            new Bottle
-            {
-                ColorsBottle = new List<ColorBlock>()
-            {
-                 new ColorBlock { Color = "" },
-                 new ColorBlock { Color = "" },
-                 new ColorBlock { Color = "" },
-            }
-            });
+            ListOfBottles = new List<Bottle>();
             FillBottles();
         }
         public void FillBottles()
         {
             //Lista de todas las botellas
-            
             Random random = new Random();
-            foreach (var bottle in ListOfBottles)
+
+            for (int e = 0; e < 3; e++)
             {
+                
+                bottle = new Bottle() { ColorsBottle = new List<ColorBlock>()
+                {
+                 new ColorBlock { Color = "" },
+                 new ColorBlock { Color = "" },
+                 new ColorBlock { Color = "" },
+                }
+                };
+                
+
                 for (int i = 0; i < 3; i++)
                 {
                     //Crea un numero entreo desde 0 a 2
-                   var numberOfColor = random.Next(0, 3);
-                    //Si es 0
-                   if(numberOfColor == 0)
+                    var numberOfColor = random.Next(0, 3);
+                    //Si es 0 es rojo
+                    if (numberOfColor == 0)
                     {
                         //y todavia se puede poner el color rojo
-                        if(reds < 3)
+                        if (reds < 3)
                         {
                             //Sumamos uno al rojo
                             reds++;
@@ -96,10 +67,10 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                             //Genera numero 0 o 1 
                             numberOfColor = random.Next(0, 2);
                             //Si el numero es 0
-                            if(numberOfColor == 0)
+                            if (numberOfColor == 0)
                             {
                                 //Y todavia no hay 3 verdes
-                                if(greens < 3)
+                                if (greens < 3)
                                 {
                                     //Sumamos a verdes
                                     greens++;
@@ -118,7 +89,7 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                             else
                             {
                                 //Aun cabe en azules
-                                if(blues < 3)
+                                if (blues < 3)
                                 {
                                     //Sumamos en azules
                                     blues++;
@@ -133,8 +104,8 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                             }
                         }
                     }
-                   /////COLOR VERDE
-                    else if(numberOfColor == 1)
+                    /////COLOR VERDE
+                    else if (numberOfColor == 1)
                     {
                         //y todavia se puede poner el color verde
                         if (greens < 3)
@@ -187,7 +158,7 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                             }
                         }
                     }
-                   ///////////COLOR AZUL
+                    ///////////COLOR AZUL
                     else
                     {
                         //y todavia se puede poner el color azul
@@ -242,7 +213,40 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                         }
                     }
                 }
+                ListOfBottles.Add(bottle);
             }
+            foreach (var bottle in ListOfBottles)
+            {
+                if (bottle.ColorsBottle[0].Color == bottle.ColorsBottle[1].Color 
+                    && bottle.ColorsBottle[2].Color == bottle.ColorsBottle[1].Color)
+                {
+                    var color = ListOfBottles[1].ColorsBottle.FirstOrDefault(x => x.Color != bottle.ColorsBottle[2].Color);
+                    if (color != null)
+                    {
+                        bottle.ColorsBottle[2].Color = color.Color;
+                    }
+                    else
+                    {
+                        var color2 = ListOfBottles[0].ColorsBottle.FirstOrDefault(x => x.Color != bottle.ColorsBottle[2].Color);
+                        if (color2 != null)
+                        {
+                            bottle.ColorsBottle[2].Color = color2.Color;
+                        }
+                    }
+                }
+            }
+            bottle = new Bottle()
+            {
+                ColorsBottle = new List<ColorBlock>()
+                {
+                 new ColorBlock { Color = "" },
+                 new ColorBlock { Color = "" },
+                 new ColorBlock { Color = "" },
+                }
+            };
+            ListOfBottles.Add(bottle);
+            ListOfBottles.Add(bottle);
+
         }
     }
 }
