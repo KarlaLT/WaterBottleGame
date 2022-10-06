@@ -1,16 +1,25 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
+
 using Unidad1JuegoBotellasAEstrella.Models;
 
 namespace Unidad1JuegoBotellasAEstrella.ViewModels
 {
     public class GameOfBottleViewModel:INotifyPropertyChanged
-    {
+    {//comandos
+        public ICommand GenerarNuevoJuegoCommand { get; set; }
+        public ICommand ResolverCommand { get; set; }
+
+        //propiedades
         private Bottle bottle;
         private List<Bottle> listOfBottles;
         public List<Bottle> ListOfBottles
@@ -26,11 +35,20 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
 
         public GameOfBottleViewModel()
         {
-            ListOfBottles = new List<Bottle>();
+            GenerarNuevoJuegoCommand = new RelayCommand(FillBottles);
+            ResolverCommand = new RelayCommand(ResolverJuego);
             FillBottles();
         }
+
+        //métodos
         public void FillBottles()
         {
+            //reiniciar juego
+            ListOfBottles = new List<Bottle>();
+            reds = 0;
+            greens = 0;
+            blues = 0;
+
             //Lista de todas las botellas
             Random random = new Random();
 
@@ -60,6 +78,7 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                             reds++;
                             //Ponemos el color en la posicion i
                             bottle.ColorsBottle[i].Color = "Red";
+                            //255 51 51 / 102 255 255
                         }
                         //Si ya hay 3
                         else
@@ -99,7 +118,7 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
                                 else
                                 {
                                     greens++;
-                                    bottle.ColorsBottle[i].Color = "Green";
+                                    bottle.ColorsBottle[i].Color = "Green"; 
                                 }
                             }
                         }
@@ -246,7 +265,13 @@ namespace Unidad1JuegoBotellasAEstrella.ViewModels
             };
             ListOfBottles.Add(bottle);
             ListOfBottles.Add(bottle);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ListOfBottles"));
+        }
 
+        public void ResolverJuego()
+        {
+            bottle.CalculateH(ListOfBottles);
+            bottle.GenerarateSuccessors(ListOfBottles);
         }
     }
 }
