@@ -90,78 +90,459 @@ namespace Unidad1JuegoBotellasAEstrella.Models
                         //Sumar +1 a la G de todas las botellas
                     }
 
-
-                    //Si los colores de la posicion 2 y 1 son iguales moveremos los 2 al de la H minima siempre y cuando
-                    //Quepa y sea del mismo color o este vacio
-                    if (secondBottleWithHmin.ColorsBottle[0].Color != "" && secondBottleWithHmin.ColorsBottle[1].Color != "")
-                    {//que no sean colores vacíos
-                        if (secondBottleWithHmin.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color ||
-                       secondBottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color)
+                    //botella llena
+                    if (secondBottleWithHmin.ColorsBottle[0].Color != "" && secondBottleWithHmin.ColorsBottle[1].Color != ""
+                        && secondBottleWithHmin.ColorsBottle[2].Color != "")
+                    {
+                        //mover dos
+                        if (secondBottleWithHmin.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color)
                         {
-                            //Si la botella con H minimo en la posicion cero es igual al color 
-                            //de la segunda botella en la posicion 1. esto para ver si se puede mover o no.
-                            if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color || bottleWithHmin.ColorsBottle[2].Color == ""
-                                )
+                            if (bottleWithHmin.ColorsBottle[2].Color == "") //si la pos 2 es vacía, los colores van a pos 2 y pos 1
                             {
-                                ////Verificar que este vacio el color en la posicion 1 y 2 para vaciar los 2 colores
-                                //if (bottleWithHmin.ColorsBottle[1].Color == "")
-                                //{
                                 //    //Vaciar los 2 colores en el botella.
-                                //    bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
-                                //    bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[2];
-                                //    //Limpiar la botella de la cual se vaciaron los colores.
-                                //    secondBottleWithHmin.ColorsBottle[1].Color = "";
-                                //    secondBottleWithHmin.ColorsBottle[1].Color = "";
+                                bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                                bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[1];
+
                                 //    //Sumar +1 a la G de todas las botellas
-                                //}
-                                //else
-                                //{
-                                //    //No podemos vaciar los 2 colores aqui porque no cabe
-                                //}
-                                if (bottleWithHmin.ColorsBottle[2].Color == "") //si la pos 2 es vacía, los colores van a pos 2 y pos 1
-                                {
-                                    //    //Vaciar los 2 colores en el botella.
-                                    bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
-                                    bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[1];
 
-                                    //    //Sumar +1 a la G de todas las botellas
-                                }
-                                else //si la pos 2 es de color igual al que se va vaciar entonces , los colores nuevos son pos 1 y pos 0
-                                {
-                                    //    //Vaciar los 2 colores en el botella.
-                                    bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
-                                    bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[1];
+                                //aún queda espacio para otro color
+                                var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
 
-                                    //    //Sumar +1 a la G de todas las botellas
-                                }
-                                //Limpiar la botella de la cual se vaciaron los colores.
-                                if (secondBottleWithHmin.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color)
+                                var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                                var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+
+                                if (bottle2 != null)
                                 {
-                                    secondBottleWithHmin.ColorsBottle[0].Color = "";
-                                    secondBottleWithHmin.ColorsBottle[1].Color = "";
+                                    bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                                    bottle2.ColorsBottle[2].Color = "";
                                 }
-                                else
+                                else if (bottle1 != null)
                                 {
-                                    secondBottleWithHmin.ColorsBottle[2].Color = "";
-                                    secondBottleWithHmin.ColorsBottle[1].Color = "";
+                                    bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                                    bottle1.ColorsBottle[1].Color = "";
                                 }
-                                //volver a calcular h
-                                CalculateH(listBottles);
+                                else if (bottle0 != null)
+                                {
+                                    bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                                    bottle0.ColorsBottle[0].Color = "";
+                                }
+                            }
+                            else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color)
+                            //si la pos 2 es de color igual al que se va vaciar entonces , los colores nuevos son pos 1 y pos 0
+                            {
+                                //    //Vaciar los 2 colores en el botella.
+                                bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                                bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[1];
+
+                                //    //Sumar +1 a la G de todas las botellas
+                            }
+
+                            //Limpiar la botella de la cual se vaciaron los colores.
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+                            secondBottleWithHmin.ColorsBottle[1].Color = "";
+
+                        }
+                        //colores 1 y 2 iguales
+                        //else if (secondBottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color && secondBottleWithHmin.ColorsBottle[0].Color=="")
+                        //{
+                        //    if (bottleWithHmin.ColorsBottle[2].Color == "") //si la pos 2 es vacía, los colores van a pos 2 y pos 1
+                        //    {
+                        //        //    //Vaciar los 2 colores en el botella.
+                        //        bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                        //        bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[1];
+
+                        //        //    //Sumar +1 a la G de todas las botellas
+
+                        //        //aún queda espacio para otro color
+                        //        var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                        //        var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                        //        var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+
+                        //        if (bottle2 != null)
+                        //        {
+                        //            bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                        //            bottle2.ColorsBottle[2].Color = "";
+                        //        }
+                        //        else if (bottle1 != null)
+                        //        {
+                        //            bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                        //            bottle1.ColorsBottle[1].Color = "";
+                        //        }
+                        //        else if (bottle0 != null)
+                        //        {
+                        //            bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                        //            bottle0.ColorsBottle[0].Color = "";
+                        //        }
+                        //    }
+                        //    else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color)
+                        //    //si la pos 2 es de color igual al que se va vaciar entonces , los colores nuevos son pos 1 y pos 0
+                        //    {
+                        //        //    //Vaciar los 2 colores en el botella.
+                        //        bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                        //        bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[1];
+
+                        //        //    //Sumar +1 a la G de todas las botellas
+
+                        //        //ya no hay espacio para color
+                        //    }
+
+                        //    //Limpiar la botella de la cual se vaciaron los colores.
+                        //    secondBottleWithHmin.ColorsBottle[2].Color = "";
+                        //    secondBottleWithHmin.ColorsBottle[1].Color = "";
+
+                        //    //volver a calcular h
+                        //    CalculateH(listBottles);
+                        //}
+
+                        //mover 1 (el de pos 1)
+                        else if (bottleWithHmin.ColorsBottle[2].Color == "")
+                        {//botella vacía
+                            bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //quedan dos espacios
+                            var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            if (bottle2 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle2.ColorsBottle[2];
+                                bottle2.ColorsBottle[2].Color = "";
+                            }
+                            else if (bottle1 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle1.ColorsBottle[1];
+                                bottle1.ColorsBottle[1].Color = "";
+                            }
+                            else if (bottle0 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle0.ColorsBottle[0];
+                                bottle0.ColorsBottle[0].Color = "";
                             }
                         }
-                    }                   
+                        else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[0].Color && bottleWithHmin.ColorsBottle[1].Color=="" && bottleWithHmin.ColorsBottle[0].Color == "")
+                        {//botella 2 espacio
+                            bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //queda 1 espacio
+                            var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[0].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[0].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[0].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            if (bottle2 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                                bottle2.ColorsBottle[2].Color = "";
+                            }
+                            else if (bottle1 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                                bottle1.ColorsBottle[1].Color = "";
+                            }
+                            else if (bottle0 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                                bottle0.ColorsBottle[0].Color = "";
+                            }
+                        }
+                        else if (bottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[0].Color)
+                        {//botella 1 espacio
+                            bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                           //botella llena
+                        }
+
+                        //volver a calcular h
+                        CalculateH(listBottles);
+                    }
+                    //botella con 1 espacio
+                    if (secondBottleWithHmin.ColorsBottle[0].Color == "" && secondBottleWithHmin.ColorsBottle[1].Color != ""
+                       && secondBottleWithHmin.ColorsBottle[2].Color != "")
+                    {
+                        //mover dos
+                        if (secondBottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color)
+                        {
+                            if (bottleWithHmin.ColorsBottle[2].Color == "") //si la pos 2 es vacía, los colores van a pos 2 y pos 1
+                            {
+                                //Vaciar los 2 colores en el botella.
+                                bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                                bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[1];
+
+                                //    //Sumar +1 a la G de todas las botellas
+
+                                //aún queda espacio para otro color
+                                var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                                var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                                var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+
+                                if (bottle2 != null)
+                                {
+                                    bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                                    bottle2.ColorsBottle[2].Color = "";
+                                }
+                                else if (bottle1 != null)
+                                {
+                                    bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                                    bottle1.ColorsBottle[1].Color = "";
+                                }
+                                else if (bottle0 != null)
+                                {
+                                    bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                                    bottle0.ColorsBottle[0].Color = "";
+                                }
+                            }
+                            else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color)
+                            //si la pos 2 es de color igual al que se va vaciar entonces , los colores nuevos son pos 1 y pos 0
+                            {
+                                //    //Vaciar los 2 colores en el botella.
+                                bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                                bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[1];
+
+                                //    //Sumar +1 a la G de todas las botellas
+                            }
+
+                            //Limpiar la botella de la cual se vaciaron los colores.
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+                            secondBottleWithHmin.ColorsBottle[1].Color = "";
+
+                        }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //mover 1 (el de pos 1)
+                        else if (bottleWithHmin.ColorsBottle[2].Color == "")
+                        {//botella vacía
+                            bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[1];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //quedan dos espacios
+                            var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            if (bottle2 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle2.ColorsBottle[2];
+                                bottle2.ColorsBottle[2].Color = "";
+                            }
+                            else if (bottle1 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle1.ColorsBottle[1];
+                                bottle1.ColorsBottle[1].Color = "";
+                            }
+                            else if (bottle0 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle0.ColorsBottle[0];
+                                bottle0.ColorsBottle[0].Color = "";
+                            }
+                        }
+                        else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[0].Color && bottleWithHmin.ColorsBottle[1].Color == "" && bottleWithHmin.ColorsBottle[0].Color == "")
+                        {//botella 2 espacio
+                            bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //queda 1 espacio
+                            var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            if (bottle2 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                                bottle2.ColorsBottle[2].Color = "";
+                            }
+                            else if (bottle1 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                                bottle1.ColorsBottle[1].Color = "";
+                            }
+                            else if (bottle0 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                                bottle0.ColorsBottle[0].Color = "";
+                            }
+                        }
+                        else if (bottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[0].Color)
+                        {//botella 1 espacio
+                            bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //botella llena
+                        }
+
+                        //volver a calcular h
+                        CalculateH(listBottles);
+
+
+
+                        //colores 1 y 2 iguales
+                        //else if (secondBottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color && secondBottleWithHmin.ColorsBottle[0].Color=="")
+                        //{
+                        //    if (bottleWithHmin.ColorsBottle[2].Color == "") //si la pos 2 es vacía, los colores van a pos 2 y pos 1
+                        //    {
+                        //        //    //Vaciar los 2 colores en el botella.
+                        //        bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                        //        bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[1];
+
+                            //        //    //Sumar +1 a la G de todas las botellas
+
+                            //        //aún queda espacio para otro color
+                            //        var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            //        var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            //        var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+
+                            //        if (bottle2 != null)
+                            //        {
+                            //            bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                            //            bottle2.ColorsBottle[2].Color = "";
+                            //        }
+                            //        else if (bottle1 != null)
+                            //        {
+                            //            bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                            //            bottle1.ColorsBottle[1].Color = "";
+                            //        }
+                            //        else if (bottle0 != null)
+                            //        {
+                            //            bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                            //            bottle0.ColorsBottle[0].Color = "";
+                            //        }
+                            //    }
+                            //    else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color)
+                            //    //si la pos 2 es de color igual al que se va vaciar entonces , los colores nuevos son pos 1 y pos 0
+                            //    {
+                            //        //    //Vaciar los 2 colores en el botella.
+                            //        bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[1];
+                            //        bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[1];
+
+                            //        //    //Sumar +1 a la G de todas las botellas
+
+                            //        //ya no hay espacio para color
+                            //    }
+
+                            //    //Limpiar la botella de la cual se vaciaron los colores.
+                            //    secondBottleWithHmin.ColorsBottle[2].Color = "";
+                            //    secondBottleWithHmin.ColorsBottle[1].Color = "";
+
+                            //    //volver a calcular h
+                            //    CalculateH(listBottles);
+                            //}
+
+                            //mover 1 
+                        else if (bottleWithHmin.ColorsBottle[2].Color == "")
+                        {//botella vacía
+                            bottleWithHmin.ColorsBottle[2] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //quedan dos espacios
+                            var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[2].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[1].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            if (bottle2 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle2.ColorsBottle[2];
+                                bottle2.ColorsBottle[2].Color = "";
+                            }
+                            else if (bottle1 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle1.ColorsBottle[1];
+                                bottle1.ColorsBottle[1].Color = "";
+                            }
+                            else if (bottle0 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[1] = bottle0.ColorsBottle[0];
+                                bottle0.ColorsBottle[0].Color = "";
+                            }
+                        }
+                        else if (bottleWithHmin.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[0].Color && bottleWithHmin.ColorsBottle[1].Color == "" && bottleWithHmin.ColorsBottle[0].Color == "")
+                        {//botella 2 espacio
+                            bottleWithHmin.ColorsBottle[1] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //queda 1 espacio
+                            var bottle0 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[0].Color == secondBottleWithHmin.ColorsBottle[0].Color && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle1 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[0].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            var bottle2 = listBottles.Where(x => x.H != 0 && x.ColorsBottle[2].Color == secondBottleWithHmin.ColorsBottle[0].Color && x.ColorsBottle[0].Color == "" && x.ColorsBottle[1].Color == "" && x.ColorsBottle != secondBottleWithHmin.ColorsBottle).OrderBy(x => x.H).FirstOrDefault();
+
+                            if (bottle2 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle2.ColorsBottle[2];
+                                bottle2.ColorsBottle[2].Color = "";
+                            }
+                            else if (bottle1 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle1.ColorsBottle[1];
+                                bottle1.ColorsBottle[1].Color = "";
+                            }
+                            else if (bottle0 != null)
+                            {
+                                bottleWithHmin.ColorsBottle[0] = bottle0.ColorsBottle[0];
+                                bottle0.ColorsBottle[0].Color = "";
+                            }
+                        }
+                        else if (bottleWithHmin.ColorsBottle[1].Color == secondBottleWithHmin.ColorsBottle[0].Color)
+                        {//botella 1 espacio
+                            bottleWithHmin.ColorsBottle[0] = secondBottleWithHmin.ColorsBottle[0];
+                            secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+                            //botella llena
+                        }
+
+                        //volver a calcular h
+                        CalculateH(listBottles);
+                    }
+
+
+
+
+
+
+
+
+
+
+
+                    //botella con dos colores llenos
                     //mover un solo color
-                    else
+                    else if (secondBottleWithHmin.ColorsBottle[1].Color != "" && secondBottleWithHmin.ColorsBottle[2].Color != "")
                     {
                         //Ver si esta completamente vacio movemos el color ahi
                         if (bottleWithHmin.ColorsBottle[2].Color == "" && bottleWithHmin.ColorsBottle[1].Color == "" && bottleWithHmin.ColorsBottle[0].Color == "")
                         {
                             //El color de la segunda botella con H minima pasa a la primera
                             if (secondBottleWithHmin.H == 3) //hay 3 colores en la botella, se mueve el de arriba pos 0
-                            {                                
+                            {
                                 bottleWithHmin.ColorsBottle[2].Color = secondBottleWithHmin.ColorsBottle[0].Color;
                                 //Quitar el color de la segunda botella.
                                 secondBottleWithHmin.ColorsBottle[0].Color = "";
+
+
+                                //quedan dos espacios de color
+
                             }
                             else if (secondBottleWithHmin.H == 2)
                             {
@@ -271,3 +652,14 @@ namespace Unidad1JuegoBotellasAEstrella.Models
         }
     }
 }
+/*
+ * ver si se podrían mover dos colores
+ * si sí
+ *   se mueven
+ *   si esa botella a donde se movieron aún tiene espacio, se busca otro color que se pueda mover ahí
+ *   
+ *si no
+ *   vuelve a calcular h 
+ *   busc
+ *     
+ */
