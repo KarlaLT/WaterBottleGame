@@ -59,11 +59,6 @@ namespace Unidad1JuegoBotellasAEstrella.Models
             //El mismo color
             //((((((((((((CLAVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE)))))))))))))))))))))/////////////////////////////////////
             //Debemos tambien vaciar el que tiene mas H en el que tiene menos H para no desperdiciar movimientos 
-            //Casi lo tengo, ya dormire, bay, eres increible.
-
-
-            ///// PENDIENTE VER COMO RESTAR H O LIMPIAR TODAS LAS H Y VOLVERLAS A CALCULAR CUANDO SE MUEVE UN COLOR.
-            //// PORQUE YO EN MI METODO SOLO SUMO EN LA H PERO FALTARIA VER DONDE PONER RESTAR LA H O LIMPIAR LA H.
 
             //Obtener la botella con la H minima
             do //meintras alguna botella aun no tenga 0 en su h, quiere decir que aún no está resuelta

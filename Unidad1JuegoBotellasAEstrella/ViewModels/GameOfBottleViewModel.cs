@@ -15,6 +15,7 @@ using Unidad1JuegoBotellasAEstrella.Models;
 namespace Unidad1JuegoBotellasAEstrella.ViewModels
 {
     public class GameOfBottleViewModel:INotifyPropertyChanged
+        //EL JUEGO NO ESTÁ TERMINADO
     {//comandos
         public ICommand GenerarNuevoJuegoCommand { get; set; }
         public ICommand ResolverCommand { get; set; }
